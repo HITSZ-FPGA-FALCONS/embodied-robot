@@ -18,18 +18,58 @@ FPGA real-time perception and autonomous control system for the 2026 National Em
 
 建议先设为 **Private**，等代码、许可证、比赛公开要求明确后再决定是否公开。
 
-## 创建仓库后
+> **更新（2026-09-16）**：团队决定直接开源，仓库已转为 **Public**。
+> 注意：仓库目前**没有 LICENSE 文件**。public 但无许可证，法律上仍是「保留所有权利」，
+> 别人没有使用授权——严格说这还不算开源，只是源码可见。需补一个许可证才算完成。
+> 另需留意：板卡由指导老师提供，作品可能涉及学校/实验室成果归属，建议补许可证前跟老师确认一句。
 
-把本模板内容提交到仓库根目录：
+## 已完成的初始化
 
 ```bash
 git init
 git add .
 git commit -m "chore(repo): initialize competition repository"
 git branch -M main
-git remote add origin <你的仓库地址>
+git remote add origin git@github.com:HITSZ-FPGA-FALCONS/embodied-robot.git
 git push -u origin main
 ```
+
+状态（2026-09-16）：仓库已建、已推送、已转 Public；14 个标签、10 条 Issue 已建。
+`main` 尚未配置分支保护——GitHub Free 套餐的**私有**仓库不支持该功能，转 Public 后可配置。
+
+## 上游资源与 Fork 策略
+
+### 一个重要事实：ACG720 例程不在 git 仓库里
+
+高云 / 小梅哥 / 芯路恒的 ACG720 官方资料**主要通过以下渠道分发，没有对应的 GitHub / Gitee 仓库**：
+
+| 渠道 | 内容 |
+|---|---|
+| 小梅哥 B 站「2025 高云全新开源教学课程（for ACG720）」 | 视频教程：Gowin 软件安装、Modelsim、Verilog 流程、UART、按键消抖、SPI ADC/DAC、ROM/RAM、FIFO、时钟管理单元 |
+| 芯路恒论坛 `corecourse.cn` | ACG720 自助服务手册、各类例程帖（USB-CDC、DDR3 缓存、数据采集、音频回环） |
+| 百度网盘资料包 | 文档教材、例程源码、硬件图纸、开发软件 |
+| 高云官网 / QQ 群 213923272 | 器件手册、IP、官方支持 |
+
+**这意味着「把官方例程 Fork 进来」这条路对 ACG720 走不通**——没有 git 上游可 Fork。
+
+实际做法：把需要的例程**下载后整理成本仓库内的子目录**，并在 `docs/UPSTREAM.md` 登记来源、获取日期、原始文件位置。这是「复制」而非「Fork」，所以登记更要写清楚，避免答辩时说不清哪些是自己写的。
+
+Sipeed Tang 系列（选题二适配）在 `wiki.sipeed.com` 有 wiki，部分项目在 GitHub——若将来需要，那部分才是真正可 Fork 的。
+
+### 可 Fork 的对象
+
+| 类型 | 处理方式 |
+|---|---|
+| 上游确实是 git 仓库的开源项目 | Fork 到本 Organization，保留 upstream remote，修改在 Fork 自己的分支里做 |
+| 官方例程（网盘/论坛分发） | 不可 Fork。下载后整理入 `third_party/` 或按模块拆分，在 `docs/UPSTREAM.md` 登记 |
+| 独立验证性质的小实验 | 建独立仓库，如 `fpga-playground` |
+| 与主项目解耦的训练工程 | 建独立仓库，如 `edge-ai-training` |
+
+### 多仓库拆分时机
+
+**不要第一天就把所有仓库建出来。等到有独立生命周期时再拆。**
+
+判定标准：这个内容是否需要独立演进、独立协作、或独立对外发布？否则先放主仓库。
 
 ## GitHub 设置建议
 
