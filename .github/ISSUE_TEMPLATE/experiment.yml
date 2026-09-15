@@ -1,0 +1,56 @@
+name: 实验 / Experiment
+description: 不确定是否采用的算法、方案或第三方项目验证
+title: "[Exp] "
+labels: ["type:experiment"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        实验类任务的产物是**结论**，不是代码。
+
+        结论可以是「不可行，原因如下」——这同样是有价值的交付物，
+        而且比硬撑着做完更省时间。关键是要在开始前写清楚验证成本上限。
+  - type: textarea
+    id: question
+    attributes:
+      label: 要回答的问题
+      description: 用能被证伪的方式写。
+      placeholder: 例：差速底盘能否在 1m 直径范围内完成原地旋转，并使摄像头完成周向目标搜索？
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: 验证方法
+      description: 怎么算「验证成功」，怎么算「验证失败」。
+      value: |
+        成功判定：
+
+        失败判定：
+    validations:
+      required: true
+  - type: input
+    id: budget
+    attributes:
+      label: 时间上限
+      description: 到点必须给出结论，无论成败。防止实验无限膨胀成子项目。
+      placeholder: "例：3 天 / 累计 8 小时"
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 优先级
+      options:
+        - priority:P0
+        - priority:P1
+        - priority:P2
+    validations:
+      required: true
+  - type: textarea
+    id: landing
+    attributes:
+      label: 若成功的落地路径
+      description: 结论为「可行」时，下一步进入哪个 Issue / 分支。为「不可行」时打算转向什么。
+    validations:
+      required: false

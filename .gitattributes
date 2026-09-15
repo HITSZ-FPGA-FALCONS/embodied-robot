@@ -1,0 +1,51 @@
+# 统一换行：仓库内一律 LF，检出到 Windows 时 RTL/脚本用 LF，
+# 避免同一份 Verilog 在两个人机器上 diff 出满屏整文件差异。
+* text=auto eol=lf
+
+# 明确文本类型
+*.v      text
+*.sv     text
+*.vh     text
+*.svh    text
+*.cst    text
+*.sdc    text
+*.gprj    text
+*.md     text
+*.py     text
+*.sh     text
+*.tcl    text
+*.yml    text
+*.yaml   text
+*.json   text
+
+# 明确二进制类型：不要做换行转换，也不要尝试文本 diff
+*.fs     binary
+*.fsl    binary
+*.bit    binary
+*.bin    binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.pdf    binary
+*.zip    binary
+*.rar    binary
+*.7z     binary
+*.docx   binary
+*.pptx   binary
+*.xlsx   binary
+*.xdc    text
+
+# 波形与仿真产物不做 diff
+*.vcd    binary
+*.wlf    binary
+*.wdb    binary
+*.fst    binary
+
+# GitHub 语言统计：避免把文档/例程算成主语言，误导仓库首页
+*.md     linguist-documentation
+docs/**  linguist-documentation
+demo/**  linguist-documentation
+
+# 第三方/生成代码不计入统计（若确有此目录，按需取消注释）
+# third_party/**  linguist-vendored
+# generated/**    linguist-generated

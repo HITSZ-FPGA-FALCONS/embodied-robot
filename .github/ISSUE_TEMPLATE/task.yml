@@ -1,0 +1,94 @@
+name: 任务 / Task
+description: 一个有明确交付物与验收标准的开发任务
+title: "[Task] "
+labels: ["type:task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        一个 Issue 对应一个可验收结果。
+
+        标题请写成能直接验收的成果，例如「完成正交编码器计数 RTL + Testbench」，
+        而不是「学 FPGA」。范围太散的任务请拆成多个 Issue。
+  - type: textarea
+    id: goal
+    attributes:
+      label: 目标
+      description: 这个任务要产出什么？一句话说清交付物。
+      placeholder: 例：实现正交编码器计数模块，输出位置计数与旋转方向。
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: 领域
+      options:
+        - area:fpga
+        - area:control
+        - area:sensor
+        - area:vision
+        - area:ai
+        - area:hardware
+        - area:docs
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 优先级
+      description: P0 = 阻塞主链路；P2 = 有余力再做
+      options:
+        - priority:P0
+        - priority:P1
+        - priority:P2
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: 负责人
+      description: 同一时刻一个模块只能有一个明确 owner。新功能是「划分当前负责人」，不是切割知识。
+      placeholder: "@某人"
+    validations:
+      required: true
+  - type: textarea
+    id: interface
+    attributes:
+      label: 接口约定
+      description: 涉及跨成员协作的，先填这张表再写代码。纯内部模块可写「无」。
+      value: |
+        | 项 | 内容 |
+        |---|---|
+        | 模块名称 |  |
+        | 输入 |  |
+        | 输出 |  |
+        | 时钟 |  |
+        | 复位 |  |
+        | 数据宽度 |  |
+        | 有效信号 |  |
+        | 单位 |  |
+        | 更新频率 |  |
+        | 异常状态 |  |
+    validations:
+      required: false
+  - type: textarea
+    id: dod
+    attributes:
+      label: 验收标准（Definition of Done）
+      description: 写成可观测、可复现的检查项。「能跑就行」「看起来没问题」不是验收标准。
+      value: |
+        - [ ]
+        - [ ]
+        - [ ] 输出物已提交
+        - [ ] 能复现（含接线 / 参数 / 波形或日志）
+        - [ ] 通过至少一个异常边界测试
+        - [ ] 必要文档已更新
+    validations:
+      required: true
+  - type: input
+    id: depends
+    attributes:
+      label: 依赖 / 阻塞
+      placeholder: "依赖 #12；或：等待 ACG720 到货"
+    validations:
+      required: false

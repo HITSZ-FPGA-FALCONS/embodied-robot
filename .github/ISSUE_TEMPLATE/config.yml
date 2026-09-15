@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 高云 FPGA 竞赛官方指导群（QQ 213923272）
+    url: https://www.gowinsemi.com.cn/university/match2026
+    about: 板卡、工具链、器件相关的问题，优先在厂家官方群问。群里拿到的结论请回填到 Issue 或 docs/，不要只留在聊天记录里。
+  - name: 2026 年 FPGA 竞赛常见问题（腾讯文档）
+    url: https://docs.qq.com/doc/DTkhTUmFBaVpnZUNz
+    about: 报名、赛程、规则类问题先查这里，再问指导老师。
+  - name: 本仓库协作规范
+    url: ./docs/TEAM_WORKFLOW.md
+    about: 分工、接口约定、每日同步与集成纪律。

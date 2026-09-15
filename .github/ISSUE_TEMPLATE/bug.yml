@@ -1,0 +1,68 @@
+name: 问题 / Bug
+description: 仿真、上板或整机行为与预期不符
+title: "[Bug] "
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        描述现象，不要描述猜测。
+
+        「电机不转」是现象；「PID 参数不对」是猜测——除非你有证据。
+        先写清楚「期望发生什么」和「实际发生了什么」，这个差别本身就指向一半的原因。
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      placeholder: 例：发送定点旋转指令后，底盘以 ≤5° 误差原地旋转 90°。
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 写可观测的事实：数值、波形、日志、现象。
+      placeholder: 例：底盘原地旋转约 135° 才停，超调后不回调。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 让别人能照着复现。写不清复现步骤的 bug，通常也没定位到原因。
+      value: |
+        1.
+        2.
+        3.
+        复现概率：__ / __ 次
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境 / 版本
+      value: |
+        | 项 | 内容 |
+        |---|---|
+        | Git commit |  |
+        | bitstream commit |  |
+        | 开发板 |  |
+        | 工具链版本 |  |
+        | 接线改动 |  |
+        | 关键参数 |  |
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 证据
+      description: 波形截图、串口日志、示波器/逻辑分析仪抓图、视频。路径或直接粘贴。
+    validations:
+      required: false
+  - type: textarea
+    id: tried
+    attributes:
+      label: 已尝试的排查
+      description: 试过什么、排除了什么。避免下一个人重复踩同一遍。
+    validations:
+      required: false
