@@ -112,6 +112,9 @@ module tb_pwm_gen;
 
     integer errors = 0;
 
+    // 用例 7a 的等待循环用的标志位（iverilog v12 不支持 break，见该处注释）
+    reg seen_high = 1'b0;
+
     // ── 检查任务 ────────────────────────────────────────────────────────────
     //
     //  ⚠️ 用 `cond !== 1'b1` 而不是 `!cond`：
@@ -301,10 +304,16 @@ module tb_pwm_gen;
         //
         //     统一成"先过一拍 → 等 1ns 稳定 → 再判断"，
         //     循环里的判断和退出后的断言读的就是同一个值。
-        while (1) begin
+        //
+        // ⚠️ 这里**不能用 `break`**：iverilog v12 不支持 `break` 语句
+        //     （即使加了 -g2012 也会报 "sorry: break statements not supported"）。
+        //     这是个只有真正编译一次才会暴露的错误 —— 静态审查看不出来。
+        //     改用标志位控制循环，效果相同且可移植。
+        seen_high = 1'b0;
+        while (!seen_high) begin
             @(posedge clk);
             #1;
-            if (pwm === 1'b1) break;
+            if (pwm === 1'b1) seen_high = 1'b1;
         end
         check(pwm === 1'b1, "en=1 且 duty=50% 时应当能等到 pwm 为高");
         $display("  [7a] en=1 时能等到 pwm=1 ............. %s", pwm === 1'b1 ? "OK" : "FAIL");
