@@ -42,6 +42,39 @@ rtl/edge_top.v              # 顶层
 
 不能用「上板偶尔能跑」替代模块验证。
 
+## 编码规范
+
+**本项目的 RTL 规范不在本文件里**，在 `D:\HITSZ_FALCONS\.claude\`：
+
+| 文件 | 内容 |
+|---|---|
+| `.claude/rtl-skills-CLAUDE.md` | 流水线总纲（`varch`→`vdesign`→`vfill`→`vtestgen`→`vsynth`→`vdoc`）与目录约定 |
+| `.claude/skills/shared/CodingStyle.md` | 编码风格：复位、参数、命名、时序块 |
+| `.claude/skills/shared/ModuleDocContract.md` | 模块文档契约（要求文档脱离 RTL 也能读懂） |
+| `.claude/skills/shared/DesignPatterns.md` | 常用设计模式 |
+
+**新写的模块按上面这套来。** 其中最容易被忽略的一条：
+
+> **复位一律用同步复位，极性由 `RS_LV` 参数决定，不要硬编码。**
+> 模式是 `always @(posedge clk)` + `if (rst_n == RS_LV)`，不是
+> `always @(posedge clk or negedge rst_n)`。
+
+### ⚠️ 存量不合规（待处理，见 Issue 追踪）
+
+以下文件写在规范落地之前，**尚未对齐**，不要照抄它们的写法：
+
+| 文件 | 不合规处 |
+|---|---|
+| `rtl/clk_div.v` | 异步复位 `always @(posedge clk or negedge rst_n)`，硬编码低有效；缺 `RS_LV` |
+| `rtl/pwm_gen.v` | 同上 |
+| `tb/tb_clk_div.v` | 用了 `$sformatf` / `input string`（SystemVerilog）但扩展名是 `.v`；裁定 token 不是约定的 `[FINISH] PASS` |
+| `tb/tb_pwm_gen.v` | 同上 |
+
+> 规范还要求 `rtl/`、`lib/` 下的可综合代码是 **Verilog-2005**，不得使用 SystemVerilog；
+> `tb/` 下的测试代码豁免，但要用 `.sv` 扩展名。目前四个文件都是 `.v`。
+
+对齐与否、什么时候对齐，由团队定；**在对齐之前，新模块一律按规范写，不要跟着旧文件走。**
+
 ## 关于工具链
 
 高云官方工具链为 **Gowin IDE / 云源软件**（`GowinSynthesis` 综合）。ACG720 板卡配套例程与引脚约束以厂家提供为准。
