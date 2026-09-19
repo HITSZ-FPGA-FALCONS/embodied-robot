@@ -76,6 +76,9 @@ module pwm_gen #(
     // ⚠️ 这里用的是整数除法。如果 CLK_HZ 不能被 PWM_HZ 整除，
     //    实际频率会和你想的不一样（而且不报错）。
     //    在 testbench 里用 $display 把 PERIOD 打出来确认，是个好习惯。
+    //
+    // ⚠️ PERIOD 还必须 ≥ 2。若 CLK_HZ == PWM_HZ，PERIOD = 1，
+    //    下面的 $clog2(1) = 0 会造出一个 0 位宽的 reg，是非法写法。
     localparam PERIOD = CLK_HZ / PWM_HZ;
 
     // ── 计数器位宽 ──────────────────────────────────────────────────────────
