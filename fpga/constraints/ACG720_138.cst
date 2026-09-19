@@ -94,6 +94,50 @@ IO_PORT "clk" IO_TYPE=LVCMOS33;
 
 
 // ============================================================================
+//  GPIO0 扩展口 —— 题3 自选外设（电机/编码器/雷达/IMU）
+// ----------------------------------------------------------------------------
+//  ⚠️ 全部为 hardware/接线表.md 的 v0.1 **草案**，未经原理图确认，暂不启用。
+//
+//  分配原则：从 GPIO0_18 起连续分配，避开 GPIO0_2~GPIO0_17 ——
+//            该段与板载 AD7606 焊盘可能复用（见 ACG720_pinout.md）。
+//
+//  ⚠️ 接线前必须先解决 hardware/接线表.md §6 的 W-1 / W-2：
+//            ① GPIO0 与 AD7606 的复用关系  ② 扩展排针的物理针序
+// ============================================================================
+
+// ── 编码器 A/B ×4（读 4 路，控制仍按左右两侧）────────────────────────────────
+// 位序：bit0=左前  bit1=左后  bit2=右前  bit3=右后   —— 不要随意改
+// 输入统一 PULL_MODE=UP：断线时表现为稳定高电平，否则计数器会浮空乱跳
+// IO_LOC  "enc_a[0]" D17;   IO_PORT "enc_a[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "enc_b[0]" C17;   IO_PORT "enc_b[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "enc_a[1]" E16;   IO_PORT "enc_a[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "enc_b[1]" D16;   IO_PORT "enc_b[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "enc_a[2]" B17;   IO_PORT "enc_a[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "enc_b[2]" B18;   IO_PORT "enc_b[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "enc_a[3]" C18;   IO_PORT "enc_a[3]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "enc_b[3]" C19;   IO_PORT "enc_b[3]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+// ── 电机 PWM / DIR ×2 侧（同侧前后轮共用一路驱动）─────────────────────────────
+// 输出 DRIVE=8：默认驱动能力偏小，长排线 + 20kHz 下边沿会变缓
+// IO_LOC  "pwm_l" F16;   IO_PORT "pwm_l" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "dir_l" E17;   IO_PORT "dir_l" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "pwm_r" D20;   IO_PORT "pwm_r" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "dir_r" C20;   IO_PORT "dir_r" IO_TYPE=LVCMOS33 DRIVE=8;
+
+// ── M10 激光雷达串口 ────────────────────────────────────────────────────────
+// IO_LOC  "lidar_rx" E19;  IO_PORT "lidar_rx" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "lidar_tx" D19;  IO_PORT "lidar_tx" IO_TYPE=LVCMOS33 DRIVE=8;
+
+// ── IMU（独立 I²C，不复用板载 M16/M13 —— 原因见 hardware/接线表.md §4.1）──────
+// IO_LOC  "imu_scl" F18;  IO_PORT "imu_scl" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "imu_sda" E18;  IO_PORT "imu_sda" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+// ── 预留 ────────────────────────────────────────────────────────────────────
+// IO_LOC  "gpio0_34" F19;  IO_PORT "gpio0_34" IO_TYPE=LVCMOS33;
+// IO_LOC  "gpio0_35" F20;  IO_PORT "gpio0_35" IO_TYPE=LVCMOS33;
+
+
+// ============================================================================
 //  时序约束（.sdc 部分）
 // ----------------------------------------------------------------------------
 //  高云的时序约束写在 .sdc 文件里，不在这里。
