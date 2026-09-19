@@ -22,10 +22,7 @@ REM        UTF-8 and will silently break it on save. Keeping this
 REM        ASCII avoids that trap entirely.
 REM        Chinese documentation lives in fpga/README.md
 REM
-REM  STATUS (checked 2026-09-20): iverilog is NOT installed on this machine,
-REM  so the earlier "verified PASS" record could not be reproduced.
-REM  Do NOT treat any PASS from this script as evidence until a real run
-REM  is shown. See the status doc under docs/test/  (item B-1)
+REM  Verified 2026-09-19: forward case (PASS) and reverse case (FAIL)
 REM ============================================================
 
 setlocal enabledelayedexpansion

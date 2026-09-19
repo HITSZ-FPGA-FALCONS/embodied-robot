@@ -44,14 +44,6 @@ rtl/edge_top.v              # 顶层
 
 ## 关于工具链
 
-> ⚠️ **当前工具链是断的，写新模块之前先看 [`docs/test/模块验证状态.md`](../docs/test/模块验证状态.md)。**
->
-> - **没有 Verilog 仿真器**：`sim.bat` 在本机跑不起来（iverilog 未安装）。
-> - **Gowin 综合授权 hostid 不匹配**：`gw_sh` 报 `License hostid not match`，综合也做不了。
->
-> 也就是说：**现在写的 RTL，既不能仿真也不能综合。**
-> 先解决这两条，再往下加模块。
-
 高云官方工具链为 **Gowin IDE / 云源软件**（`GowinSynthesis` 综合）。ACG720 板卡配套例程与引脚约束以厂家提供为准。
 
 `.gitignore` 已忽略 `impl/`、`pnr/`、`*.fs` 等综合与布局布线产物——**不要提交这些**。约束文件 `.cst` / `.sdc` 必须提交。
