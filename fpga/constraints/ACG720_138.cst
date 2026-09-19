@@ -1,0 +1,106 @@
+// ============================================================================
+//  ACG720-GW5AT138  物理约束模板 (.cst)
+// ----------------------------------------------------------------------------
+//  器件：GW5AT-LV138PG484AC1/I0   （-name GW5AT-138C -device_version C）
+//  来源：厂商官方管脚表 `04_引脚功能信息/高云 ACG720-138&60K通用管脚分配表.xlsx`
+//        已登记于 docs/UPSTREAM.md
+//
+//  用法：本文件是**模板**。按实际用到的信号取消注释，不要整份启用——
+//        未使用的信号如果写了约束但代码里没有，综合会报错。
+//
+//  语法：IO_LOC 绑定信号到物理管脚；IO_PORT 设置电平标准与上下拉/驱动能力。
+//        两行必须同时写，只写 IO_LOC 会缺少电平设置。
+// ============================================================================
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  系统时钟 50MHz   （板上晶振，必接）
+// ─────────────────────────────────────────────────────────────────────────────
+IO_LOC  "clk" Y18;
+IO_PORT "clk" IO_TYPE=LVCMOS33;
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  复位按键 S4 （官方标注为复位键）
+//  备用：例程里用的是 S0=F15，若沿用例程请改用 F15
+// ─────────────────────────────────────────────────────────────────────────────
+// IO_LOC  "rst_n" B21;
+// IO_PORT "rst_n" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  LED ×9   ——「点灯」最小验证用 LED0
+//  注意：LED8=M21 与「无源蜂鸣器 BEEP」管脚相同，用之前上板实测确认
+// ─────────────────────────────────────────────────────────────────────────────
+// IO_LOC  "led" M22;              // LED0
+// IO_PORT "led" IO_TYPE=LVCMOS33 DRIVE=8;
+
+// 全部 9 个 LED（流水灯用）：
+// IO_LOC  "led[0]" M22;   IO_PORT "led[0]" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "led[1]" N22;   IO_PORT "led[1]" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "led[2]" L21;   IO_PORT "led[2]" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "led[3]" K21;   IO_PORT "led[3]" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "led[4]" K22;   IO_PORT "led[4]" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "led[5]" J22;   IO_PORT "led[5]" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "led[6]" H22;   IO_PORT "led[6]" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "led[7]" M21;   IO_PORT "led[7]" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "led[8]" N19;   IO_PORT "led[8]" IO_TYPE=LVCMOS33 DRIVE=8;
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  串口   （issue #2/#3，队友负责）
+// ─────────────────────────────────────────────────────────────────────────────
+// IO_LOC  "uart_tx" M15;
+// IO_PORT "uart_tx" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "uart_rx" J21;
+// IO_PORT "uart_rx" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  数码管 74HC595  （上板验证备选，引脚已确认）
+// ─────────────────────────────────────────────────────────────────────────────
+// IO_LOC  "seg_dio"  M18;   IO_PORT "seg_dio"  IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "seg_rclk" C2;    IO_PORT "seg_rclk" IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "seg_sclk" F4;    IO_PORT "seg_sclk" IO_TYPE=LVCMOS33 DRIVE=8;
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  I²C（板载总线，可接 IMU / 测距）
+//  ⚠️ 这是板上已有的 I²C 总线，接自己的模块前先查原理图确认是否已挂其他器件
+// ─────────────────────────────────────────────────────────────────────────────
+// IO_LOC  "iic_sda" M16;   IO_PORT "iic_sda" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "iic_scl" M13;   IO_PORT "iic_scl" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  摄像头 OV5640  DVP 并口 8bit + SCCB
+//  ⚠️ 引脚多，仅在真正做摄像头链路时启用
+// ─────────────────────────────────────────────────────────────────────────────
+// IO_LOC  "cam_d[0]"  J2;   IO_PORT "cam_d[0]"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_d[1]"  J1;   IO_PORT "cam_d[1]"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_d[2]"  G1;   IO_PORT "cam_d[2]"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_d[3]"  H2;   IO_PORT "cam_d[3]"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_d[4]"  F1;   IO_PORT "cam_d[4]"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_d[5]"  G2;   IO_PORT "cam_d[5]"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_d[6]"  D1;   IO_PORT "cam_d[6]"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_d[7]"  E1;   IO_PORT "cam_d[7]"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_pclk"  B1;   IO_PORT "cam_pclk"  IO_TYPE=LVCMOS33;
+// IO_LOC  "cam_href"  A1;   IO_PORT "cam_href"  IO_TYPE=LVCMOS33;
+// IO_LOC  "cam_vsync" B2;   IO_PORT "cam_vsync" IO_TYPE=LVCMOS33;
+// IO_LOC  "cam_xclk"  M17;  IO_PORT "cam_xclk"  IO_TYPE=LVCMOS33 DRIVE=8;
+// IO_LOC  "cam_sdat"  L18;  IO_PORT "cam_sdat"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_sclk"  M20;  IO_PORT "cam_sclk"  IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "cam_rst"   N20;  IO_PORT "cam_rst"   IO_TYPE=LVCMOS33 DRIVE=8;
+
+
+// ============================================================================
+//  时序约束（.sdc 部分）
+// ----------------------------------------------------------------------------
+//  高云的时序约束写在 .sdc 文件里，不在这里。
+//  50 MHz 时钟的基本约束（放 fpga/constraints/timing.sdc）：
+//
+//      create_clock -name clk -period 20 -waveform {0 10} [get_ports {clk}]
+//
+//  （50 MHz → 周期 20 ns）
+//  跨时钟域的信号必须做同步处理，并在代码注释里写明——见 fpga/README.md 硬性要求 §3。
+// ============================================================================
