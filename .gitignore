@@ -38,6 +38,7 @@ xsim.dir/
 *.vvp
 *.fst
 *.sim
+sim.out
 modelsim.ini
 transcript
 vsim.wlf
@@ -50,6 +51,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Syncthing 冲突副本（两台机器同时改同一个文件时产生）
+*.sync-conflict-*
 *.swp
 *~
 .idea/
