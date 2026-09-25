@@ -116,7 +116,7 @@ FPGA 里没有"小数"。**所有物理量必须在接口上写明定标**，否
 | `uart_rx` / `uart_tx` | 通信 | `rtl/uart_*.v` | 队友 B | **未开始** |
 | `imu_spi_master` | 感知 | `rtl/imu_spi_master.v` | 队友 B | **未开始** |
 | `ranger_uart` | 感知 | `rtl/ranger_uart.v` | 队友 B | **未开始** |
-| `pid_ctrl` | 控制 | `rtl/pid_ctrl.v` | 你 | **未开始** |
+| `pid_ctrl` | 控制 | `rtl/pid_ctrl.v` | 你 | **已仿真 PASS**（TB 带电机模型 + 反向验证） |
 | `odom` | 控制 | `rtl/odom.v` | 你 | **未开始** |
 | `safety_wdt` | 安全 | `rtl/safety_wdt.v` | 你 | **已仿真 PASS**（TB 亦经反向验证） |
 | `robot_top` | 集成 | `rtl/robot_top.v` | 你 | **未开始** |
@@ -229,22 +229,36 @@ duty = PERIOD   → 恒高（100%）
 
 ### 3.4 `pid_ctrl` —— 速度环
 
-> 状态：**未开始**。
+> 状态：**已实现，仿真 PASS**（2026-09-25，iverilog v12，TB 带一阶电机模型）。
+> 实现：`fpga/rtl/pid_ctrl.v` · TB：`fpga/tb/tb_pid_ctrl.sv` · 文档：`fpga/doc/pid_ctrl.md`
+>
+> 四轮差速**一侧一份**（左右各一个实例）。
 
 | 信号 | 方向 | 位宽 | 说明 |
 |---|---|---|---|
 | `clk` / `rst_n` | in | 1 | — |
 | `tick` | in | 1 | 控制周期使能，**20 ms（50 Hz）** |
-| `target` | in | 16 | 目标速度，mm/s |
-| `actual` | in | 16 | 实测速度，mm/s |
-| `duty` | out | 12 | PWM 占空比输出 |
-| `en` | in | 1 | 0 = 复位积分项并输出 0 |
+| `target` | in | 16 | 目标速度，mm/s，**有符号**（可负 = 倒车） |
+| `actual` | in | 16 | 实测速度，mm/s，**有符号** |
+| `en` | in | 1 | 0 = 复位积分项并输出 0（**电平有效，且不等 `tick`**） |
+| `duty` | out | 12 | PWM 占空比，**恒为非负**（0 ~ `DUTY_MAX`） |
+| `dir` | out | 1 | 方向：0 = 正转，1 = 反转 |
+
+参数：`DUTY_W=12` / `DUTY_MAX=2500` / `GAIN_SHIFT=8` / `KP=256` / `KI=32` / `KD=0` / `ACC_MAX=200000` / `RS_LV=0`。
 
 **约定**
 
 - 控制周期 **20 ms（50 Hz）**。太快没意义（机械响应跟不上），太慢转向会发飘。
-- 输出**必须内置限幅**（`0 ~ PERIOD`）——积分饱和会让车在松开指令后继续冲。
+- 输出**必须内置限幅**（`0 ~ DUTY_MAX`）——积分饱和会让车在松开指令后继续冲。
+  **实测**：去掉 anti-windup 后，松开指令 80 个控制周期实测速度仍有 **998 mm/s**。
 - 积分项在 `en = 0` 时必须清零，否则重新使能瞬间会跳。
+- **`DUTY_MAX` 必须等于 `pwm_gen` 的 `PERIOD`**，不一致会导致占空比比例错误且不报错。
+- `actual` 的单位必须与 `target` 一致（mm/s）。**换算在 `odom` 里做一次**，不要两边各算一遍。
+
+> ⚠️ **`dir` 是 2026-09-25 补进接口表的。** 原表只有 `duty`（0~PERIOD）。
+> 但目标速度可以是负的——一个只表达"多快"、表达不了"往哪边"的输出，
+> 会让倒车永远退不回来。符号必须单独引出来。这是 freeze 时的第二处疏漏
+> （第一处是 `encoder_counter` 缺 `tick`）。
 
 ### 3.5 `odom` —— 轮式里程计
 
