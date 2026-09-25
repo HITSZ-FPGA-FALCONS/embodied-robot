@@ -57,11 +57,28 @@ always @(posedge clk) if (tick) ...;
 
 | 信号 | 极性 | 来源 | 引脚 | 约定 |
 |---|---|---|---|---|
-| `rst_n` | **低有效** | 复位按键 S4 | `B21`（⚠️ 待实测确认） | 异步复位 / 同步释放 |
+| `rst_n` | 由参数 `RS_LV` 决定（默认 0 = 低有效） | 复位按键 S4 | `B21`（⚠️ 待实测确认） | **同步复位** |
 
-- 所有时序模块统一用 `always @(posedge clk or negedge rst_n)`。
+**统一写法**（`.claude/skills/shared/CodingStyle.md` §5 / `ModuleDocContract` §5）：
+
+```verilog
+always @(posedge clk)
+    if (rst_n == RS_LV) ...       // ✅ 同步复位，极性由 RS_LV 决定
+    else                ...
+```
+
+- **本项目一律同步复位**，`always @(posedge clk)`，**不带 `negedge rst_n`**。
+- 极性由**最后一个参数 `RS_LV`** 决定（默认 0 = 低有效）。
+  端口名恒为 `rst_n`——名字是固定约定，不代表极性。
 - ⚠️ **引脚待确认**：`.cst` 里 S4 = `B21`，但官方例程用的是 **S0 = `F15`**。
   上板前用一次点灯实验确认，确认后回来改这一行。见 §6 未决事项 U-1。
+
+> ⚠️ **本节的旧版本写的是"异步复位 / 同步释放"和
+> `always @(posedge clk or negedge rst_n)`，2026-09-25 更正。**
+> 那是接口表冻结（09-20）时写的，当时 RTL 编码规范还没落地。
+> `clk_div.v` / `pwm_gen.v` 仍沿用旧写法，属于**存量不合规**
+> （已在 `fpga/README.md` 登记）。**新模块以本节为准**——
+> `encoder_counter` / `safety_wdt` / `pid_ctrl` 都已是同步复位。
 
 ### 1.3 数值表示
 
