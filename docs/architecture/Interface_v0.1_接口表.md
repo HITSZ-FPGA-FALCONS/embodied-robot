@@ -118,7 +118,7 @@ FPGA 里没有"小数"。**所有物理量必须在接口上写明定标**，否
 | `ranger_uart` | 感知 | `rtl/ranger_uart.v` | 队友 B | **未开始** |
 | `pid_ctrl` | 控制 | `rtl/pid_ctrl.v` | 你 | **未开始** |
 | `odom` | 控制 | `rtl/odom.v` | 你 | **未开始** |
-| `safety_wdt` | 安全 | `rtl/safety_wdt.v` | 你 | **未开始** |
+| `safety_wdt` | 安全 | `rtl/safety_wdt.v` | 你 | **已仿真 PASS**（TB 亦经反向验证） |
 | `robot_top` | 集成 | `rtl/robot_top.v` | 你 | **未开始** |
 
 ---
@@ -262,17 +262,30 @@ duty = PERIOD   → 恒高（100%）
 ### 3.6 `safety_wdt` —— 安全看门狗
 
 > **这是全系统唯一"必须有"的模块。** 见 README「系统：AI 异常时底层安全控制仍保持有效」。
+>
+> 状态：**已实现，仿真 PASS**（2026-09-25，iverilog v12）。
+> 实现：`fpga/rtl/safety_wdt.v` · TB：`fpga/tb/tb_safety_wdt.sv` · 文档：`fpga/doc/safety_wdt.md`
 
 | 信号 | 方向 | 位宽 | 说明 |
 |---|---|---|---|
 | `clk` / `rst_n` | in | 1 | — |
-| `kick` | in | 1 | 单周期脉冲，喂狗 |
-| `timeout_ms` | in | 16 | 超时阈值，默认 **200 ms** |
-| `fault` | out | 1 | 高 = 超时，上层必须切断电机 |
-| `pwm_en` | out | 1 | 直接串在 PWM `en` 上 |
+| `kick` | in | 1 | 单周期脉冲，喂狗。**必须周期性给** |
+| `timeout_ms` | in | 16 | 超时阈值（ms）。**0 = 立即触发**（fail-safe，不是永不触发） |
+| `fault` | out | 1 | 高 = 超时，上层必须切断电机。**锁存，只能复位清除** |
+| `pwm_en` | out | 1 | `~fault`，直接串在 PWM `en` 上 |
+
+参数：`CLK_HZ=50_000_000`（须能被 1000 整除）、`RS_LV=0`。
 
 约定：`fault` 一旦拉高，**只能靠 `rst_n` 清除**（不自恢复）。
 自恢复的看门狗在故障持续存在时会变成"周期性抽搐"，比停住更危险。
+
+**接入方式**（别让 AI 直接碰 PWM）：
+
+```verilog
+.en (user_pwm_en & wdt_pwm_en)     // 看门狗串进 PWM 使能
+```
+
+喂狗周期与阈值的关系：**阈值 ≥ 喂狗周期的 2 倍**（当前约定 20 ms 喂 / 200 ms 阈值）。
 
 ---
 
