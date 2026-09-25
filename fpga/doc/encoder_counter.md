@@ -221,11 +221,18 @@ encoder_counter #(
 
 | 项 | 值 |
 |---|---|
+| **被验证的 commit** | `c036907`（RTL + TB 所在提交） |
 | 仿真器 | iverilog **v12.0**（`C:\iverilog\bin\`），`-g2012` |
+| 日期 | 2026-09-25 笔记本侧 |
+| 命令 | `iverilog -g2012 -o sim.out fpga/tb/tb_encoder_counter.sv fpga/rtl/encoder_counter.v && vvp sim.out` |
 | 结果 | **PASS**，12 项检查全过 |
 | 反向验证 | 三个变异体全部被抓：方向取反 → 6 项 FAIL；去掉 `clr` → 10 项 FAIL；`default` 也计数 → 10 项 FAIL |
 | 综合 | ⬜ 未做（笔记本无 Gowin 授权） |
 | 上板 | ⬜ 未做 |
+
+> **为什么必须写 commit**：09-20 出过一次事故——台式机报过 `pwm_gen` 的 PASS，
+> 但没记 commit，事后发现跑的是旧版本，**那个 PASS 什么也没证明**。
+> 跑一遍 + 记 commit，缺一不可。
 
 > **反向验证的意义**：证明这个 testbench 在模块真的错了时会报 FAIL。
 > 一个永远不报 FAIL 的 testbench，和没有 testbench 是一回事。
